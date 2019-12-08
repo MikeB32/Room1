@@ -8,5 +8,6 @@ import retrofit2.http.Query;
 
 public interface NewsApi {
     @GET("search?")
-    Call<NewsResponse> getNewsList(@Query("api-key") String apiKey);
+    Call<NewsResponse> getNewsList(@Query("page") int pageNo,
+                                   @Query("api-key") String apiKey);
 }

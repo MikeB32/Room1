@@ -37,6 +37,15 @@
             android:layout_below="@id/tvDesCription"
             android:layout_marginTop="17dp" />
 
+        <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:background="#00ffffff"
+            android:src="@android:drawable/btn_star" />
+
 
     </RelativeLayout>
 

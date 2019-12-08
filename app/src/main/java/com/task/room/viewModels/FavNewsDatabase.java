@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.task.room.FavNews;
 import com.task.room.FavNewsDao;
 
-@Database(entities = {FavNews.class}, version = 1,exportSchema = false)
+@Database(entities = {FavNews.class}, version = 1)
 public abstract class FavNewsDatabase extends RoomDatabase {
 
     private static FavNewsDatabase instance;
@@ -25,7 +25,7 @@ public abstract class FavNewsDatabase extends RoomDatabase {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     FavNewsDatabase.class, "note_database")
-                    .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .addCallback(roomCallback)
                     .build();
         }

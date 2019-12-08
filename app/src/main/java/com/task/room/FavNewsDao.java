@@ -15,6 +15,9 @@ public interface FavNewsDao {
     @Insert
     void insert(FavNews favNews);
 
+    @Insert
+    void offlineDate(FavNews favNews);
+
     @Update
     void update(FavNews favNews);
 
@@ -26,4 +29,9 @@ public interface FavNewsDao {
 
     @Query("SELECT * FROM news_table")
     LiveData<List<FavNews>> getAllNotes();
+
+    @Query("SELECT EXISTS (SELECT * FROM news_table WHERE title=:title)")
+    Boolean  isFavorite(Boolean title);
+
+
 }

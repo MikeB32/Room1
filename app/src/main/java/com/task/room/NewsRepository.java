@@ -1,6 +1,7 @@
 package com.task.room;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
@@ -22,27 +23,13 @@ public class NewsRepository {
     private LiveData<List<FavNews>> allNotes;
 
     private NewsApi newsApi;
-    private static NewsRepository newsRepository;
 
 
-    public static NewsRepository getInstance(){
-        if (newsRepository == null){
-            newsRepository = new NewsRepository();
-        }
-        return newsRepository;
-    }
-
-    private NewsRepository(){
+    public MutableLiveData<NewsResponse> getNews(int pageNo,String key){
         newsApi = RetrofitService.cteateService(NewsApi.class);
-    }
 
-
-
-
-
-    public MutableLiveData<NewsResponse> getNews(String key){
         final MutableLiveData<NewsResponse> newsData = new MutableLiveData<>();
-        newsApi.getNewsList( key).enqueue(new Callback<NewsResponse>() {
+        newsApi.getNewsList(pageNo,key).enqueue(new Callback<NewsResponse>() {
             @Override
             public void onResponse(Call<NewsResponse> call,
                                    Response<NewsResponse> response) {
@@ -69,8 +56,15 @@ public class NewsRepository {
     }
 
     public void insert(FavNews favNews) {
-        new InsertNoteAsyncTask(favNewsDao).execute(favNews);
+        Runnable myRunnable = createRunnable(favNews);
+        myRunnable.run();
     }
+
+//    public void offlineData(FavNews favNews) {
+//        Runnable myRunnable = createRunnable2(favNews);
+//        myRunnable.run();
+//    }
+
 
     public void update(FavNews favNews) {
         new UpdateNoteAsyncTask(favNewsDao).execute(favNews);
@@ -87,6 +81,8 @@ public class NewsRepository {
     public LiveData<List<FavNews>> getAllNotes() {
         return allNotes;
     }
+
+
 
     private static class InsertNoteAsyncTask extends AsyncTask<FavNews, Void, Void> {
         private FavNewsDao favNewsDao;
@@ -143,4 +139,32 @@ public class NewsRepository {
             return null;
         }
     }
+
+
+
+    private Runnable createRunnable(final FavNews favNews){
+
+        Runnable aRunnable = new Runnable(){
+            public void run(){
+                favNewsDao.insert(favNews);
+            }
+        };
+
+        return aRunnable;
+
+    }
+//    private Runnable createRunnable2(final FavNews favNews){
+//
+//        Runnable aRunnable = new Runnable(){
+//            public void run(){
+//                favNewsDao.offlineDate(favNews);
+//            }
+//        };
+//
+//        return aRunnable;
+//
+//    }
+
+
+
 }

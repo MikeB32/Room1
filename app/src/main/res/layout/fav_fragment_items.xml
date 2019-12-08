@@ -19,7 +19,7 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/tvName2"
+                android:id="@+id/tvDesCription2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -27,11 +27,22 @@
             />
 
             <TextView
-                android:id="@+id/tvDesCription2"
+                android:id="@+id/tvName2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvName2"
+                android:layout_below="@id/tvDesCription2"
                 />
+
+            <ImageButton
+                android:id="@+id/offline_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:background="#00ffffff"
+                android:src="@android:drawable/btn_plus" />
+
+
         </RelativeLayout>
 
     </RelativeLayout>

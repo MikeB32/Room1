@@ -16,9 +16,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.task.room.FavNews;
 import com.task.room.NewsRepository;
 import com.task.room.NoteViewModel;
+import com.task.room.OnItemClick;
 import com.task.room.R;
 import com.task.room.adapters.FavAdapter;
+import com.task.room.adapters.NewsAdapter;
+import com.task.room.model.Result;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FavFragment extends Fragment {
@@ -29,9 +33,6 @@ public class FavFragment extends Fragment {
     private RecyclerView recyclerView;
     FavAdapter favAdapter;
 
-    public FavFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * @return A new instance of fragment SpeedDialFragment.
@@ -45,6 +46,7 @@ public class FavFragment extends Fragment {
         super.onCreate(savedInstanceState);
         pageViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
 
+
 //        pageViewModel.setIndex(TAG);
     }
 
@@ -56,8 +58,10 @@ public class FavFragment extends Fragment {
         recyclerView = root.findViewById(R.id.rvNews2);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        favAdapter = new FavAdapter();
+        favAdapter = new FavAdapter(getActivity(),pageViewModel);
         recyclerView.setAdapter(favAdapter);
+
+
 
 
 
@@ -69,6 +73,7 @@ public class FavFragment extends Fragment {
                 favAdapter.setNotes(favNewsList);
 
 
+
                 favAdapter.notifyDataSetChanged();
 
                 Log.e("size",favNewsList.size()+"");
@@ -78,4 +83,6 @@ public class FavFragment extends Fragment {
 
         return root;
     }
+
+
 }

@@ -15,12 +15,22 @@ public class FavNews {
 
     private String description;
 
+    private String url;
 
-    public FavNews(String title, String description) {
-        this.title = title;
-        this.description = description;
+    private String offlineData;
 
+    public String getOfflineData() {
+        return offlineData;
     }
+
+    public void setOfflineData(String offlineData) {
+        this.offlineData = offlineData;
+    }
+//    public FavNews(String title, String description,String url) {
+//        this.title = title;
+//        this.description = description;
+//        this.url = url;
+//    }
 
     public void setId(int id) {
         this.id = id;
@@ -46,6 +56,12 @@ public class FavNews {
     public String getDescription() {
         return description;
     }
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
 }
