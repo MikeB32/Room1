@@ -36,12 +36,13 @@ import com.task.room.viewModels.FavNewsDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
     Context context;
     ArrayList<Result> articles;
     OnItemClick onItemClick;
     List<FavNews> favNews;
+
 
     public NewsAdapter(Context context, ArrayList<Result> articles ,OnItemClick onItemClick) {
         this.context = context;
@@ -63,15 +64,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     public void onBindViewHolder(@NonNull final NewsViewHolder holder, final int position) {
         holder.tvName.setText(articles.get(position).getWebTitle());
         holder.tvDesCription.setText(articles.get(position).getSectionName());
+            FavNews  favNews = new FavNews();
 
-        if(FavNewsDatabase.getInstance(context).noteDao().isFavorite(articles.get(position).getWebTitle().equals(favNews.get(position).getTitle())))
-        {
-
-            holder.fav_btn.setImageDrawable(ContextCompat.getDrawable(context, android.R.drawable.btn_star_big_on));
-        }else
-         {
-            holder.fav_btn.setImageDrawable(ContextCompat.getDrawable(context, android.R.drawable.bottom_bar));
-        }
+//        if(FavNewsDatabase.getInstance(context).noteDao().isFavorite(articles.get(position).getWebTitle().equals("")))
+//        {
+//
+//            holder.fav_btn.setImageDrawable(ContextCompat.getDrawable(context, android.R.drawable.btn_star_big_on));
+//        }else
+//         {
+//            holder.fav_btn.setImageDrawable(ContextCompat.getDrawable(context, android.R.drawable.alert_dark_frame));
+//        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +100,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     public int getItemCount() {
         return articles.size();
     }
+
 
 
 
