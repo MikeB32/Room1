@@ -65,7 +65,7 @@ public class NewsRepository {
     public String singleLoad(final int id) throws ExecutionException, InterruptedException {
 
         ExecutorService executor = Executors.newFixedThreadPool(1);
-        FutureTask<String> futureTask = new FutureTask<String>(new doSomething(favNewsDao,id));
+        FutureTask<String> futureTask = new FutureTask<String>(new gettingDatabyId(favNewsDao,id));
         executor.execute(futureTask);
 
             return futureTask.get();
@@ -109,18 +109,17 @@ public class NewsRepository {
         return allNotes;
     }
 
-    public static class doSomething implements Callable<String> {
+    public static class gettingDatabyId implements Callable<String> {
              private   FavNewsDao favNewsDao;
              private   int id;
-        public doSomething(FavNewsDao favNewsDao,int id) {
+        private gettingDatabyId(FavNewsDao favNewsDao,int id) {
             this.favNewsDao = favNewsDao;
             this.id = id;
 
         }
 
         @Override
-        public String call() throws Exception {
-            // TODO something...
+        public String call(){
             return favNewsDao.loadSingle(id);
         }
     }
