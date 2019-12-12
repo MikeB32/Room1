@@ -30,8 +30,7 @@ public class NewsRepository {
     private LiveData<List<FavNews>> allNotes;
     private NewsApi newsApi;
     private FavNewsDatabase database;
-    private String sasa;
-    private int id ;
+    private String offlineData;
     public MutableLiveData<NewsResponse> getNews(int pageNo,String key){
         newsApi = RetrofitService.cteateService(NewsApi.class);
 
@@ -69,8 +68,8 @@ public class NewsRepository {
         ExecutorService executor = Executors.newFixedThreadPool(1);
         FutureTask<String> futureTask = new FutureTask<String>(new doSomething(favNewsDao,id));
         executor.execute(futureTask);
-        sasa = futureTask.get();
-            return sasa;
+
+            return futureTask.get();
     }
 
 
