@@ -12,6 +12,17 @@ public class Result {
         @SerializedName("webUrl")
         private String webUrl;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @SerializedName("id")
+    private String id;
+
     public String getSectionName() {
         return sectionName;
     }

@@ -1,23 +1,21 @@
-package com.task.room;
+package com.task.room.viewModels;
 
 import android.app.Application;
-import android.content.Context;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.task.room.FavNews;
 import com.task.room.model.NewsResponse;
+import com.task.room.repository.NewsRepository;
 
 import java.util.List;
 
-public class NoteViewModel extends AndroidViewModel {
+public class NewsViewModel extends AndroidViewModel {
     private NewsRepository repository;
         private LiveData<List<FavNews>> allNotes;
 
-    public NoteViewModel(Application application) {
+    public NewsViewModel(Application application) {
         super(application);
         repository = new NewsRepository(application);
 
@@ -34,12 +32,14 @@ public class NoteViewModel extends AndroidViewModel {
         repository.insert(favNews);
     }
 
-//    public void offlineData(FavNews favNews) {
-//
-//        repository.offlineData(favNews);
-//    }
+    public String singleLoad(int id) {
+
+
+        return repository.singleLoad(id);
+    }
 
     public void update(FavNews favNews) {
+
         repository.update(favNews);
     }
 
@@ -47,9 +47,6 @@ public class NoteViewModel extends AndroidViewModel {
         repository.delete(favNews);
     }
 
-    public void deleteAllNotes() {
-        repository.deleteAllNotes();
-    }
 
     public LiveData<List<FavNews>> getAllNotes() {
 

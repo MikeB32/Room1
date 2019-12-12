@@ -1,9 +1,6 @@
 package com.task.room.fragments;
 
-import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,20 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.task.room.CheckInternet;
-import com.task.room.FavNews;
-import com.task.room.NewsRepository;
-import com.task.room.NoteViewModel;
-import com.task.room.OnItemClick;
+import com.task.room.viewModels.NewsViewModel;
 import com.task.room.R;
 import com.task.room.adapters.NewsAdapter;
 import com.task.room.model.NewsResponse;
 import com.task.room.model.Result;
-import com.task.room.viewModels.FavNewsDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsFragment extends Fragment implements  OnItemClick {
+public class NewsFragment extends Fragment  {
 
 
     ArrayList<Result> articleArrayList = new ArrayList<>();
@@ -50,7 +42,7 @@ public class NewsFragment extends Fragment implements  OnItemClick {
 
     private static final String TAG = "NewsFragment";
 
-    private NoteViewModel pageViewModel;
+    private NewsViewModel pageViewModel;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -65,7 +57,7 @@ public class NewsFragment extends Fragment implements  OnItemClick {
         super.onCreate(savedInstanceState);
 
 
-        pageViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        pageViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
 
 //        pageViewModel.setIndex(TAG);
     }
@@ -75,7 +67,7 @@ public class NewsFragment extends Fragment implements  OnItemClick {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.news_fragment, container, false);
-        rvHeadline = root.findViewById(R.id.rvNews);
+        rvHeadline = root.findViewById(R.id.news);
         swipeRefreshLayout = root.findViewById(R.id.swip_refresh_layout);
 
 
@@ -148,7 +140,7 @@ public class NewsFragment extends Fragment implements  OnItemClick {
     private void setupRecyclerView() {
         if (newsAdapter == null) {
             mLayoutManager = new LinearLayoutManager(getActivity());
-            newsAdapter = new NewsAdapter(getActivity(), articleArrayList, this);
+            newsAdapter = new NewsAdapter(getActivity(), articleArrayList, pageViewModel);
             rvHeadline.setLayoutManager(mLayoutManager);
             rvHeadline.setAdapter(newsAdapter);
             rvHeadline.setItemAnimator(new DefaultItemAnimator());
@@ -161,17 +153,6 @@ public class NewsFragment extends Fragment implements  OnItemClick {
 
 
 
-
-    @Override
-    public void onClick(String title, String sectionName, String url) {
-
-        FavNews  favNews = new FavNews();
-        favNews.setTitle(title);
-        favNews.setDescription(sectionName);
-        favNews.setUrl(url);
-        pageViewModel.insert(favNews);
-
-    }
     private void fetchData(){
         pageNo = pageNo + 1 ;
         pageViewModel.getNewsRepository(pageNo).observe(getActivity(), new Observer<NewsResponse>() {

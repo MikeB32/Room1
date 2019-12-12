@@ -1,7 +1,5 @@
 package com.task.room;
 
-
-
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -26,11 +24,6 @@ public class FavNews {
     public void setOfflineData(String offlineData) {
         this.offlineData = offlineData;
     }
-//    public FavNews(String title, String description,String url) {
-//        this.title = title;
-//        this.description = description;
-//        this.url = url;
-//    }
 
     public void setId(int id) {
         this.id = id;

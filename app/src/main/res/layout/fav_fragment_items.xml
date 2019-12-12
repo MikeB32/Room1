@@ -1,51 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_blue_shape"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardElevation="0dp"
+    app:cardCornerRadius="5dp"
+    android:dividerHeight="0.0px"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:layout_margin="4dp"
+    app:cardPreventCornerOverlap="false">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/fav_news_category"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:layout_alignParentStart="true"
+            android:ellipsize="end"
+            android:textStyle="bold"
 
-            <TextView
-                android:id="@+id/tvDesCription2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:ellipsize="end"
             />
 
-            <TextView
-                android:id="@+id/tvName2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvDesCription2"
-                />
+        <TextView
+            android:id="@+id/fav_news_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fav_news_category"
+            android:layout_marginTop="17dp" />
 
-            <ImageButton
-                android:id="@+id/offline_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:background="#00ffffff"
-                android:src="@android:drawable/btn_plus" />
+        <ImageButton
+            android:id="@+id/offline_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+
+            android:layout_marginEnd="30dp"
+            android:background="#00ffffff"
+            android:src="@android:drawable/ic_menu_save" />
+
+        <ImageButton
+            android:id="@+id/delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:background="#00ffffff"
+            android:src="@android:drawable/ic_menu_delete" />
 
 
-        </RelativeLayout>
 
     </RelativeLayout>
 
 
+
 </androidx.cardview.widget.CardView>
+

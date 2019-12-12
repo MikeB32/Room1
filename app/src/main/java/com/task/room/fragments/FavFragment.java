@@ -11,25 +11,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.task.room.FavNews;
-import com.task.room.NewsRepository;
-import com.task.room.NoteViewModel;
-import com.task.room.OnItemClick;
+import com.task.room.viewModels.NewsViewModel;
 import com.task.room.R;
 import com.task.room.adapters.FavAdapter;
-import com.task.room.adapters.NewsAdapter;
-import com.task.room.model.Result;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FavFragment extends Fragment {
 
     private static final String TAG = "FavFragment";
 
-    private NoteViewModel pageViewModel;
+    private NewsViewModel pageViewModel;
     private RecyclerView recyclerView;
     FavAdapter favAdapter;
 
@@ -44,7 +38,7 @@ public class FavFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        pageViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
 
 
 //        pageViewModel.setIndex(TAG);
@@ -55,7 +49,7 @@ public class FavFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fav_fragment, container, false);
-        recyclerView = root.findViewById(R.id.rvNews2);
+        recyclerView = root.findViewById(R.id.favNews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         favAdapter = new FavAdapter(getActivity(),pageViewModel);
@@ -72,11 +66,8 @@ public class FavFragment extends Fragment {
 
                 favAdapter.setNotes(favNewsList);
 
-
-
                 favAdapter.notifyDataSetChanged();
 
-                Log.e("size",favNewsList.size()+"");
 
             }
         });

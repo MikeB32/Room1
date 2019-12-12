@@ -1,54 +1,43 @@
 package com.task.room.adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.StrictMode;
-import android.util.Base64;
-import android.util.Log;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.task.room.CheckInternet;
 import com.task.room.FavNews;
-import com.task.room.Main2Activity;
-import com.task.room.NoteViewModel;
-import com.task.room.OnItemClick;
+import com.task.room.activities.WebPageActivity;
+import com.task.room.viewModels.NewsViewModel;
 import com.task.room.R;
-import com.task.room.model.Result;
-import com.task.room.viewModels.FavNewsDatabase;
-
-
-
-
-import java.io.BufferedReader;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavAdapterViewHolder> {
 
-    List<FavNews> favNews = new ArrayList<>();
-    Context context;
-    FavNews favNewsItem;
-    NoteViewModel noteViewModel;
-    String test;
-    String xx;
-    FavNews favNews7;
+    private List<FavNews> favNews = new ArrayList<>();
+    private Context context;
+    private NewsViewModel newsViewModel;
+    private Intent intent;
 
-    public FavAdapter(Context context,NoteViewModel noteViewModel) {
+    public FavAdapter(Context context, NewsViewModel newsViewModel) {
         this.context = context;
-        this.noteViewModel = noteViewModel;
+        this.newsViewModel = newsViewModel;
 
     }
 
@@ -61,41 +50,40 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavAdapterViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FavAdapterViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final FavAdapterViewHolder holder, final int position) {
 
-         favNewsItem = favNews.get(position);
-            holder.tvName.setText(favNewsItem.getTitle());
-            holder.tvDesCription.setText(favNewsItem.getDescription());
 
-            holder.offlineBtn.setOnClickListener(new View.OnClickListener() {
+        holder.title.setText(favNews.get(position).getTitle());
+        holder.category.setText(favNews.get(position).getDescription());
+
+        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Runnable myRunnable = createRunnable(favNewsItem.getUrl());
+                    newsViewModel.delete(favNews.get(position));
+                }
+            });
+            holder.offlineBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        if(CheckInternet.isNetwork(context)){
+                            new getWebContentAsyncTask(context, newsViewModel,favNews.get(position)).execute(favNews.get(position).getUrl());
+                        } else {
+                            Toast.makeText(context,"Internet connection is required to save",Toast.LENGTH_SHORT).show();
+                        }
 
-                    myRunnable.run();
                 }
             });
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    FavNews favNews = new FavNews();
-//                    String xx =favNews.getOfflineData();
-//                    Log.e("what",favNews.getOfflineData());
-                    Intent intent = new Intent(context, Main2Activity.class);
-                    if(favNewsItem.getUrl()!=null) {
-                        intent.putExtra("url", favNewsItem.getUrl());
-                        Log.e("url1", favNewsItem.getUrl());
-                    }if(xx!=null) {
-                        SharedPreferences sharedPreferences =context.getSharedPreferences("aa",Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("data",xx);
-                        editor.putString("newUrl",test);
-
-                        editor.apply();
-//                        intent.putExtra("data", image64);
-//                        Log.e("data1", xx);
+                     intent = new Intent(context, WebPageActivity.class);
+                    if (CheckInternet.isNetwork(context)) {
+                        intent.putExtra("url", favNews.get(position).getUrl());
+                    }else {
+                        intent.putExtra("data", favNews.get(position).getId());
                     }
+
                     context.startActivity(intent);
                 }
             });
@@ -108,73 +96,88 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavAdapterViewHo
     }
 
     public void setNotes(List<FavNews> favNews){
-
         this.favNews = favNews ;
-
         notifyDataSetChanged();
+    }
+
+
+
+    private static String getHtml(String url)  {
+
+        HttpResponse response ;
+        HttpGet httpGet;
+        HttpClient mHttpClient  ;
+        String s = "";
+
+        try {
+
+            mHttpClient = new DefaultHttpClient();
+            httpGet = new HttpGet(url);
+
+            response = mHttpClient.execute(httpGet);
+            s = EntityUtils.toString(response.getEntity(), "UTF-8");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+
+    private static class getWebContentAsyncTask extends AsyncTask<String, Integer, String> {
+        private ProgressDialog dialog;
+
+        private NewsViewModel newsViewModel;
+        private String offlineHtml;
+        private FavNews favNews;
+        private Context context;
+
+        private  getWebContentAsyncTask(Context context, NewsViewModel newsViewModel, FavNews favNews) {
+            this.newsViewModel = newsViewModel;
+            this.favNews = favNews;
+            this.context = context;
+            dialog = new ProgressDialog(context);
+
+        }
+        @Override
+        public void onPreExecute() {
+            dialog.setMessage("Saving.....");
+            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... url) {
+
+                offlineHtml = getHtml(url[0]);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            if (dialog.isShowing()) {
+
+                favNews.setOfflineData(offlineHtml);
+                newsViewModel.update(favNews);
+                dialog.dismiss();
+                Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                super.onPostExecute(s);
+            }
+        }
     }
 
     public class FavAdapterViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvName;
-        TextView tvDesCription;
-        ImageButton offlineBtn;
-
-        public FavAdapterViewHolder(@NonNull View itemView) {
+        private TextView title;
+        private TextView category;
+        private ImageButton offlineBtn;
+        private ImageButton deleteBtn;
+        private FavAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            tvName = itemView.findViewById(R.id.tvName2);
-            tvDesCription = itemView.findViewById(R.id.tvDesCription2);
+            title = itemView.findViewById(R.id.fav_news_title);
+            category = itemView.findViewById(R.id.fav_news_category);
             offlineBtn = itemView.findViewById(R.id.offline_button);
+            deleteBtn = itemView.findViewById(R.id.delete_btn);
+
 
 
         }
-    }
-
-    public static String getHtml(String url) throws IOException {
-
-
-        // Build and set timeout values for the request.
-        URLConnection connection = (new URL(url)).openConnection();
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-        connection.connect();
-
-        // Read and store the result line by line then return the entire string.
-        InputStream in = connection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder html = new StringBuilder();
-        for (String line; (line = reader.readLine()) != null; ) {
-            html.append(line);
-        }
-        in.close();
-
-        return html.toString();
-    }
-
-    private Runnable createRunnable(final String url){
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-        StrictMode.setThreadPolicy(policy);
-        Runnable aRunnable = new Runnable(){
-            public void run() {
-                try {
-                    test  = url;
-                    xx =  getHtml(url);
-                     favNews7 = new FavNews();
-                    favNews7.setOfflineData(xx);
-                    FavNewsDatabase.getInstance(context).noteDao().offlineDate(favNews7);
-//                    favNews.getOfflineData();
-                   Log.e("hell",xx);
-                    Log.e("hell2",favNews7.getOfflineData());
-
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        return aRunnable;
-
     }
 }
