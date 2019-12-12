@@ -115,8 +115,9 @@ public class NewsFragment extends Fragment  {
 
                 if(isScrolling && (currentItem + scrollOutItems == totalItems)){
                     isScrolling = false;
-                    fetchData();
-
+                    if(CheckInternet.isNetwork(getActivity())) {
+                        fetchData();
+                    }
                 }
             }
         });
