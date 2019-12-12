@@ -10,6 +10,7 @@ import com.task.room.model.NewsResponse;
 import com.task.room.repository.NewsRepository;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class NewsViewModel extends AndroidViewModel {
     private NewsRepository repository;
@@ -32,7 +33,7 @@ public class NewsViewModel extends AndroidViewModel {
         repository.insert(favNews);
     }
 
-    public String singleLoad(int id) {
+    public String singleLoad(int id) throws ExecutionException, InterruptedException {
 
 
         return repository.singleLoad(id);

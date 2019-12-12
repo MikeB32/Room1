@@ -28,25 +28,17 @@ import java.util.List;
 public class NewsFragment extends Fragment  {
 
 
-    ArrayList<Result> articleArrayList = new ArrayList<>();
-    NewsAdapter newsAdapter;
-    RecyclerView rvHeadline;
+    private ArrayList<Result> articleArrayList = new ArrayList<>();
+    private NewsAdapter newsAdapter;
+    private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Boolean isScrolling= false;
     private int currentItem , totalItems , scrollOutItems;
     private LinearLayoutManager mLayoutManager;
     private int pageNo = 1;
 
-
-    String title,sectionName,url;
-
-    private static final String TAG = "NewsFragment";
-
     private NewsViewModel pageViewModel;
 
-    public NewsFragment() {
-        // Required empty public constructor
-    }
 
     public static NewsFragment newInstance() {
         return new NewsFragment();
@@ -59,20 +51,18 @@ public class NewsFragment extends Fragment  {
 
         pageViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
 
-//        pageViewModel.setIndex(TAG);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.news_fragment, container, false);
-        rvHeadline = root.findViewById(R.id.news);
+        recyclerView = root.findViewById(R.id.news);
         swipeRefreshLayout = root.findViewById(R.id.swip_refresh_layout);
 
 
         if (CheckInternet.isNetwork(getActivity())) {
-            pageViewModel.getNewsRepository(pageNo).observe(this, new Observer<NewsResponse>() {
+            pageViewModel.getNewsRepository(pageNo).observe(getViewLifecycleOwner(), new Observer<NewsResponse>() {
                 @Override
                 public void onChanged(NewsResponse newsResponse) {
                     List<Result> newsArticles = newsResponse.getResponse().getResults();
@@ -83,14 +73,14 @@ public class NewsFragment extends Fragment  {
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "check the internet connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
         }
 
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
                 if (CheckInternet.isNetwork(getActivity())) {
-                    pageViewModel.getNewsRepository(pageNo).observe(getActivity(), new Observer<NewsResponse>() {
+                    pageViewModel.getNewsRepository(pageNo).observe(getViewLifecycleOwner(), new Observer<NewsResponse>() {
                         @Override
                         public void onChanged(NewsResponse newsResponse) {
                             List<Result> newsArticles = newsResponse.getResponse().getResults();
@@ -100,13 +90,13 @@ public class NewsFragment extends Fragment  {
                         }
                     });
                 } else {
-                    Toast.makeText(getActivity(), "check the internet connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
                 }
                     swipeRefreshLayout.setRefreshing(false);
                 }
             });
 
-        rvHeadline.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -125,7 +115,6 @@ public class NewsFragment extends Fragment  {
 
                 if(isScrolling && (currentItem + scrollOutItems == totalItems)){
                     isScrolling = false;
-                    //add new data to the list after swiping
                     fetchData();
 
                 }
@@ -141,10 +130,10 @@ public class NewsFragment extends Fragment  {
         if (newsAdapter == null) {
             mLayoutManager = new LinearLayoutManager(getActivity());
             newsAdapter = new NewsAdapter(getActivity(), articleArrayList, pageViewModel);
-            rvHeadline.setLayoutManager(mLayoutManager);
-            rvHeadline.setAdapter(newsAdapter);
-            rvHeadline.setItemAnimator(new DefaultItemAnimator());
-            rvHeadline.setNestedScrollingEnabled(true);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(newsAdapter);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setNestedScrollingEnabled(true);
         } else {
             newsAdapter.notifyDataSetChanged();
         }
@@ -155,7 +144,7 @@ public class NewsFragment extends Fragment  {
 
     private void fetchData(){
         pageNo = pageNo + 1 ;
-        pageViewModel.getNewsRepository(pageNo).observe(getActivity(), new Observer<NewsResponse>() {
+        pageViewModel.getNewsRepository(pageNo).observe(getViewLifecycleOwner(), new Observer<NewsResponse>() {
             @Override
             public void onChanged(NewsResponse newsResponse) {
                 List<Result> newsArticles = newsResponse.getResponse().getResults();
@@ -164,5 +153,10 @@ public class NewsFragment extends Fragment  {
                 newsAdapter.notifyDataSetChanged();
             }
         });
+    }
+    @Override
+    public void onDestroyView() {
+        recyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 }

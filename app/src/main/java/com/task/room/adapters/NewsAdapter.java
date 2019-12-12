@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.task.room.CheckInternet;
 import com.task.room.FavNews;
 import com.task.room.activities.WebPageActivity;
 import com.task.room.viewModels.NewsViewModel;
@@ -47,10 +49,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, WebPageActivity.class);
-                intent.putExtra("url",articles.get(position).getWebUrl());
+                if(CheckInternet.isNetwork(context)) {
+                    Intent intent = new Intent(context, WebPageActivity.class);
+                    intent.putExtra("url", articles.get(position).getWebUrl());
 
-                context.startActivity(intent);
+                    context.startActivity(intent);
+                }else {
+                    Toast.makeText(context,R.string.need_internet_connection,Toast.LENGTH_SHORT).show();
+                }
             }
         });
         holder.fav_btn.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +71,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                     favNews.setUrl(webUrl);
 
                    newsViewModel.insert(favNews);
-                   Toast.makeText(context,"Add to favorite",Toast.LENGTH_SHORT).show();
+                   Toast.makeText(context,R.string.add_favorite,Toast.LENGTH_SHORT).show();
 
             }
         });

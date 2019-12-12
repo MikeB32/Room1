@@ -39,11 +39,17 @@ public class DefaultExecutorSupplier {
                 backgroundPriorityThreadFactory
         );
 
+
+
         mMainThreadExecutor = new MainThreadExecutor();
     }
 
     public ThreadPoolExecutor forBackgroundTasks() {
         return mForBackgroundTasks;
+    }
+
+    public Executor forMainThreadTasks() {
+        return mMainThreadExecutor;
     }
 
 }

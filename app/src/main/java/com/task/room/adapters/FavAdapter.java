@@ -69,7 +69,7 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavAdapterViewHo
                         if(CheckInternet.isNetwork(context)){
                             new getWebContentAsyncTask(context, newsViewModel,favNews.get(position)).execute(favNews.get(position).getUrl());
                         } else {
-                            Toast.makeText(context,"Internet connection is required to save",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,R.string.need_internet_connection,Toast.LENGTH_SHORT).show();
                         }
 
                 }
@@ -180,4 +180,5 @@ public class FavAdapter extends RecyclerView.Adapter<FavAdapter.FavAdapterViewHo
 
         }
     }
+
 }

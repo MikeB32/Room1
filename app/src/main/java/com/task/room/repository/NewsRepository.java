@@ -1,6 +1,9 @@
 package com.task.room.repository;
 
 import android.app.Application;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,6 +15,12 @@ import com.task.room.networking.NewsApi;
 import com.task.room.networking.RetrofitService;
 import com.task.room.threads.DefaultExecutorSupplier;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,7 +29,9 @@ public class NewsRepository {
     private FavNewsDao favNewsDao;
     private LiveData<List<FavNews>> allNotes;
     private NewsApi newsApi;
-
+    private FavNewsDatabase database;
+    private String sasa;
+    private int id ;
     public MutableLiveData<NewsResponse> getNews(int pageNo,String key){
         newsApi = RetrofitService.cteateService(NewsApi.class);
 
@@ -46,17 +57,25 @@ public class NewsRepository {
 
 
     public NewsRepository(Application application) {
-        FavNewsDatabase database = FavNewsDatabase.getInstance(application);
+         database = FavNewsDatabase.getInstance(application);
         favNewsDao = database.noteDao();
         allNotes = favNewsDao.getAllNotes();
     }
 
 
 
-    public String singleLoad(int id){
+    public String singleLoad(final int id) throws ExecutionException, InterruptedException {
 
-        return  favNewsDao.loadSingle(id);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        FutureTask<String> futureTask = new FutureTask<String>(new doSomething(favNewsDao,id));
+        executor.execute(futureTask);
+        sasa = futureTask.get();
+            return sasa;
     }
+
+
+
+
 
     public void insert(final FavNews favNews){
         DefaultExecutorSupplier.getInstance().forBackgroundTasks()
@@ -92,5 +111,20 @@ public class NewsRepository {
         return allNotes;
     }
 
+    public static class doSomething implements Callable<String> {
+             private   FavNewsDao favNewsDao;
+             private   int id;
+        public doSomething(FavNewsDao favNewsDao,int id) {
+            this.favNewsDao = favNewsDao;
+            this.id = id;
+
+        }
+
+        @Override
+        public String call() throws Exception {
+            // TODO something...
+            return favNewsDao.loadSingle(id);
+        }
+    }
 
 }

@@ -20,8 +20,7 @@ public abstract class FavNewsDatabase extends RoomDatabase {
     public static synchronized FavNewsDatabase getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    FavNewsDatabase.class, "note_database")
-                    .allowMainThreadQueries()
+                    FavNewsDatabase.class, "news_database")
                     .build();
         }
         return instance;

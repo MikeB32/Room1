@@ -21,16 +21,13 @@ import java.util.List;
 
 public class FavFragment extends Fragment {
 
-    private static final String TAG = "FavFragment";
 
     private NewsViewModel pageViewModel;
     private RecyclerView recyclerView;
-    FavAdapter favAdapter;
+    private FavAdapter favAdapter;
 
 
-    /**
-     * @return A new instance of fragment SpeedDialFragment.
-     */
+
     public static FavFragment newInstance() {
         return new FavFragment();
     }
@@ -38,16 +35,13 @@ public class FavFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+        pageViewModel = ViewModelProviders.of(getActivity()).get(NewsViewModel.class);
 
-
-//        pageViewModel.setIndex(TAG);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fav_fragment, container, false);
         recyclerView = root.findViewById(R.id.favNews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -60,7 +54,7 @@ public class FavFragment extends Fragment {
 
 
 
-        pageViewModel.getAllNotes().observe(this, new Observer<List<FavNews>>() {
+        pageViewModel.getAllNotes().observe(getViewLifecycleOwner(), new Observer<List<FavNews>>() {
             @Override
             public void onChanged(List<FavNews> favNewsList) {
 
@@ -75,5 +69,9 @@ public class FavFragment extends Fragment {
         return root;
     }
 
-
+    @Override
+    public void onDestroyView() {
+        recyclerView.setAdapter(null);
+        super.onDestroyView();
+    }
 }

@@ -3,4 +3,15 @@
 
     <string name="tab_text_1">News</string>
     <string name="tab_text_2">Favourite</string>
+
+    <string name="not_saved">Offline not available</string>
+    <string name="need_internet_connection">Internet connection is required to save</string>
+
+    <string name="add_favorite">Add to favorite</string>
+
+    <string name="check_internet"> Check the internet connection</string>
+
+
+
+
 </resources>

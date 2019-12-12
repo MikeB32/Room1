@@ -13,6 +13,8 @@ import com.task.room.CheckInternet;
 import com.task.room.R;
 import com.task.room.viewModels.NewsViewModel;
 
+import java.util.concurrent.ExecutionException;
+
 
 public class WebPageActivity extends AppCompatActivity {
 
@@ -42,10 +44,14 @@ public class WebPageActivity extends AppCompatActivity {
                 web_View.loadUrl(url);
             }
         } else {
-            id = webData.getIntExtra("data",0);
+                id = webData.getIntExtra("data",0);
+            try {
                 offlineData = newsViewModel.singleLoad(id);
-                if(offlineData.equals("")){
-                    Toast.makeText(getApplicationContext(),"Offline not available",Toast.LENGTH_SHORT).show();
+            } catch (ExecutionException |InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            if(offlineData==null){
+                    Toast.makeText(getApplicationContext(),R.string.not_saved,Toast.LENGTH_SHORT).show();
                 }else{
                     encodedHtml = Base64.encodeToString(offlineData.getBytes(), Base64.NO_PADDING);
                     web_View.loadData(encodedHtml, "text/html", "base64");
