@@ -30,7 +30,6 @@ public class NewsRepository {
     private LiveData<List<FavNews>> allNotes;
     private NewsApi newsApi;
     private FavNewsDatabase database;
-    private String offlineData;
     public MutableLiveData<NewsResponse> getNews(int pageNo,String key){
         newsApi = RetrofitService.cteateService(NewsApi.class);
 
