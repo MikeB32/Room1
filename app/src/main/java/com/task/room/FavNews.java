@@ -1,9 +1,10 @@
 package com.task.room;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "news_table")
+@Entity(tableName = "news_table",indices = @Index(value = {"title"}, unique = true))
 public class FavNews {
 
     @PrimaryKey(autoGenerate = true)

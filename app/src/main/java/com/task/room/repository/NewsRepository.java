@@ -56,7 +56,7 @@ public class NewsRepository {
 
     public NewsRepository(Application application) {
          database = FavNewsDatabase.getInstance(application);
-        favNewsDao = database.noteDao();
+        favNewsDao = database.favDao();
         allNotes = favNewsDao.getAllNotes();
     }
 

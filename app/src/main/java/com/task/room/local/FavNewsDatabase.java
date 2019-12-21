@@ -13,7 +13,7 @@ public abstract class FavNewsDatabase extends RoomDatabase {
 
     private static FavNewsDatabase instance;
 
-    public abstract FavNewsDao noteDao();
+    public abstract FavNewsDao favDao();
 
 
 
